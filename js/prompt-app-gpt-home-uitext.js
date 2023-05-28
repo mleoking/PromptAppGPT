@@ -16,7 +16,7 @@ uiText["en-us"]={
   FeatureRapid: "⚡ Low-code prompt app development",
   FeatureGPT: "🧠 GPT3/4 executors for text generation",
   FeatureDalle: "🍯 Dalle executors for image generation",
-  FeatureExten: "🔌 Extensibility with Executors (Plugins)",
+  FeatureExten: "🔌 Extensibility with executors (plugins)",
   FeatureEditor: "#️⃣ Online prompt editor, compiler and runner",
   FeatureAuto: "⚙️ Automatic user interface generation"
 };

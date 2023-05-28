@@ -13,5 +13,7 @@ appOptions:
     code: pizza_order_bot.yml
   - name: Universal Translator
     code: universal_translator.yml
+  - name: English Improver
+    code: english_improver.yml
 
 #https://quickref.me/yaml

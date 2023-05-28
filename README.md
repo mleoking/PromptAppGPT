@@ -8,7 +8,7 @@ PromptAppGPT is a low-code prompt-based rapid app development framework. PromptA
 - ⚡ Low-code prompt-based rapid app development
 - 🧠 GPT3/4 executors for text generation
 - 🍯 Dalle executors for image generation
-- 🔌 Extensibility with Executors (Plugins)
+- 🔌 Extensibility with executors (plugins)
 - #️⃣ Online prompt editor, compiler and runner
 - ⚙️ Automatic user interface generation
 - 🧨 English and Chinese user interface
