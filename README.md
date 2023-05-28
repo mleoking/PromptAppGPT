@@ -16,7 +16,7 @@ PromptAppGPT is a low-code prompt-based rapid app development framework. PromptA
 ## 🚀 Quickstart
 
 1. Get an OpenAI [API Key](https://platform.openai.com/account/api-keys).
-2. Visit the website [PromptAppGPT Web Home](http://promptappgpt.wangzhishi.net) or download the [Windows 10+ APP](dist/pag.exe?raw=true).
+2. Visit the website [PromptAppGPT Web Home](http://promptappgpt.wangzhishi.net) or download the [Windows 10+ APP](dist/pag.exe).
 3. Set the OpenAI Key/OpenAI Api Proxy/OpenAI Gpt Model.
 - OpenAI Key: the api key obtained from OpenAI.
 - OpenAI Api Proxy: the proxy to the openai api, if you can directly access openai api, the proxy is `https://api.openai.com`, otherwise the proxy should be another website (e.g. `https://api.openai-proxy.com`) that can proxy your request to the openai api.
