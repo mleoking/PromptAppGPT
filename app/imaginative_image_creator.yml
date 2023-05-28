@@ -1,0 +1,27 @@
+---
+author: Leo
+name: Imaginative Image Creator
+description: Create imaginative images from any language with GPT and DALL·E
+gptRound: single
+failedRetries: 2
+
+sysTask:
+  - executor: gpt
+    prompt: You are an imaginative image creator. 
+
+userTask: 
+  - trigger: dalle_prompt=
+    executor: dalle
+    prompt: |
+      prompt: $i{Word to draw:@textarea=$e{=(.*)}}
+      n: $i{Num of images:@select=1/2/3/4}
+      size: $i{Size of images:@select=256x256/512x512/1024x1024}
+    outputer: dalle output $e{.*}
+  - executor: gpt
+    prompt: | 
+      Generate a detailed Dall-E prompt with several adjectives for the following text:
+      ```$i{Text to draw:@input}'''
+    outputer: dalle_prompt=$e{.*} 
+    validator: .{15,}
+
+extra: 

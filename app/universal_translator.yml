@@ -1,0 +1,15 @@
+---
+author: Leo
+name: Universal Translator
+description: Universal Translator
+round: single
+
+sysTask:
+
+userTask: 
+  - executor: gpt
+    prompt: |
+      Translate the following text to $i{Translate to:@select=English/Chinese/French/Spanish}:
+      ```$i{Text:@textarea}```
+
+extra: 

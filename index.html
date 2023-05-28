@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PromptAppGPT</title>
+    <link rel="stylesheet" href="./css/halfmoon-variables.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body class="with-custom-webkit-scrollbars with-custom-css-scrollbars">
+  <div id="main_app">
+    <!-- Page wrapper with .with-navbar class -->
+    <div class="page-wrapper with-navbar">
+      <!-- Navbar (immediate child of the page wrapper) -->
+      <nav class="navbar">
+        <!-- Navbar brand -->
+        <a href="#" class="navbar-brand">
+          <!--<img src="..." alt="...">-->
+          <span class="mr-5 text-success"><i class="fa fa-rocket fa-3x" aria-hidden="true"></i></span>
+          <span class="font-weight-bold font-italic">{{theUiText.PromptAppGPT}}</span>
+        </a>
+        <!-- Navbar nav -->
+        <ul class="navbar-nav d-none d-md-flex"> <!-- d-none = display: none, d-md-flex = display: flex on medium screens and up (width > 768px) -->
+          <li class="nav-item">
+            <a href="http://PromptAppGPT.wangzhishi.net" class="nav-link">{{theUiText.Home}}</a>
+          </li>
+        </ul>
+        <div class="ml-auto"> 
+          <ul class="navbar-nav d-none d-md-flex">
+            <li class="nav-item">
+              <a href="#" class="nav-link" @click="changUiMode()">
+                <i class="fa fa-moon-o" aria-hidden="true"></i>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link" @click="changUiText()">
+                <i class="fa fa-language" aria-hidden="true"></i>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+  
+      <!-- Content wrapper -->
+      <div class="content-wrapper">
+        <div class="content">
+          <div class="text-center">
+            <img src="./images/idea.png" class="img-fluid rounded" alt="rounded image" width="200" height="200">
+          </div>
+          <h2 class="content-title ">
+            <p class="text-center">{{theUiText.Title}}</p>
+          </h2>
+          <h3 class="content-title ">
+            <p class="text-center">{{theUiText.SubTitle}}</p>
+          </h3>
+          <div class="text-center">
+            <a href="app.htm" class="btn btn-primary">
+              <i class="fa fa-chrome" aria-hidden="true"></i>
+              {{theUiText.Launch}}
+            </a>
+            <a href="dist/pag.exe" class="btn btn-primary ml-10">
+              <i class="fa fa-cloud-download" aria-hidden="true"></i>
+              {{theUiText.Download}}
+            </a>
+            <a href="https://github.com/mleoking/PromptAppGPT" class="btn btn-primary ml-10">
+              <i class="fa fa-github" aria-hidden="true"></i>
+              {{theUiText.Code}}
+            </a>
+          </div>
+        </div>  
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-sm">
+              <div class="card m-5">
+                {{theUiText.FeatureRapid}}
+              </div>
+            </div>
+            <div class="col-sm">
+              <div class="card m-5">
+                {{theUiText.FeatureGPT}}
+              </div>
+            </div>
+            <div class="col-sm">
+              <div class="card m-5">
+                {{theUiText.FeatureDalle}}
+              </div>
+            </div>
+            <div class="col-sm">
+              <div class="card m-5">
+                {{theUiText.FeatureExten}}
+              </div>
+            </div>
+            <div class="col-sm">
+              <div class="card m-5">
+                {{theUiText.FeatureEditor}}
+              </div>
+            </div>
+            <div class="col-sm">
+              <div class="card m-5">
+                {{theUiText.FeatureAuto}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<script src="./js/vue.global.prod.min.js"></script>
+<!--<script src="./js/vue-router.global.js"></script>-->
+<script src="./js/halfmoon.min.js"></script>
+<script src="./js/prompt-app-gpt-home-uitext.js"></script>
+<script src="./js/prompt-app-gpt-home.js"></script>
+
+</body>
+</html>

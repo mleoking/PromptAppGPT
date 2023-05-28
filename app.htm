@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PromptAppGPT</title>
+    <link rel="stylesheet" href="./css/codemirror.css">
+    <link rel="stylesheet" href="./css/codemirror-blackboard-m.css">
+    <link rel="stylesheet" href="./css/halfmoon-variables.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body class="with-custom-webkit-scrollbars with-custom-css-scrollbars">
+  <div id="main_app">
+    <!-- Page wrapper with .with-navbar class -->
+    <div class="page-wrapper with-navbar">
+      <!-- Navbar (immediate child of the page wrapper) -->
+      <div class="sticky-alerts">
+        <div class="alert alert-danger filled-dm alert-block position-sticky" role="alert" v-if="alert !== null">
+          <button class="close" @click="closeAlert()" type="button" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="alert-heading">{{alert.title}}</h4>
+          {{alert.content}}.
+        </div>
+      </div>
+      <nav class="navbar">
+        <!-- Navbar brand -->
+        <a href="#" class="navbar-brand">
+          <!--<img src="..." alt="...">-->
+          <span class="mr-5 text-success"><i class="fa fa-rocket fa-3x" aria-hidden="true"></i></span>
+          <span class="font-weight-bold font-italic">{{theUiText.PromptAppGPT}}</span>
+        </a>
+        <!-- Navbar nav -->
+        <ul class="navbar-nav d-none d-md-flex"> <!-- d-none = display: none, d-md-flex = display: flex on medium screens and up (width > 768px) -->
+          <li class="nav-item">
+            <a href="http://PromptAppGPT.wangzhishi.net" class="nav-link">{{theUiText.Home}}</a>
+          </li>
+          <li class="nav-item">
+            <a href="#license" class="nav-link">{{theUiText.License}}</a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">{{theUiText.SelectApp}}:</span>
+                </div>
+                <select class="form-control" v-model="appCodeSelected" @change="onAppCodeSelectedChange()">
+                  <option v-for="option in appOptions" :value="option.code">
+                    {{ option.name }}
+                  </option>
+                </select>
+              </div>
+            </a>
+          </li>
+          
+        </ul>
+        <div class="ml-auto"> 
+          <ul class="navbar-nav d-none d-md-flex">
+            <li class="nav-item">
+              <a href="#" class="nav-link" @click="changEditMode()">
+                <i class="fa fa-pencil" aria-hidden="true"></i>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link" @click="changUiMode()">
+                <!--<div class="custom-switch">
+                  <input type="checkbox" id="switch_dark" value="" checked="checked" @click="changUiMode()">
+                  <label for="switch_dark">Dark</label>
+                </div>
+                -->
+                <i class="fa fa-moon-o" aria-hidden="true"></i>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link" @click="changUiText()">
+                <i class="fa fa-language" aria-hidden="true"></i>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#settings" class="nav-link">
+                <i class="fa fa-cog" aria-hidden="true"></i>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+  
+      <!-- Content wrapper -->
+      <div class="content-wrapper">
+        <div class="modal" id="license" tabindex="-1" role="dialog">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <h5 class="modal-title">License</h5>
+              <span>MIT License
+
+                Copyright (c) 2023-present, Changwang ZHANG.
+                
+                Permission is hereby granted, free of charge, to any person obtaining a copy
+                of this software and associated documentation files (the "Software"), to deal
+                in the Software without restriction, including without limitation the rights
+                to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+                copies of the Software, and to permit persons to whom the Software is
+                furnished to do so, subject to the following conditions:
+                
+                The above copyright notice and this permission notice shall be included in all
+                copies or substantial portions of the Software.
+                
+                THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+                IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+                FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+                AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+                LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+                OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+                SOFTWARE.
+                </span>
+              <div class="text-right mt-20"> <!-- text-right = text-align: right, mt-20 = margin-top: 2rem (20px) -->
+                <a href="#" class="btn btn-primary" role="button"><i class="fa fa-times mr-5" aria-hidden="true"></i>{{theUiText.Close}}</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal" id="settings" tabindex="-1" role="dialog">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <h5 class="modal-title">{{theUiText.Settings}}</h5>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">{{theUiText.OpenAIKey}}:</span>
+                </div>
+                <input type="text" class="form-control" placeholder="Input" v-model="openaiApiKey">
+              </div>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">{{theUiText.OpenAIApiProxy}}:</span>
+                </div>
+                <input type="text" class="form-control" placeholder="Input" v-model="openaiApiProxy">
+              </div>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">{{theUiText.OpenAIGptModel}}:</span>
+                </div>
+                <input type="text" class="form-control" placeholder="Input" v-model="openaiGptModel">
+              </div>
+              <div class="text-right mt-20"> <!-- text-right = text-align: right, mt-20 = margin-top: 2rem (20px) -->
+                <a href="#" class="btn btn-primary" role="button"><i class="fa fa-times mr-5" aria-hidden="true"></i>{{theUiText.Close}}</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal" id="websecurity" tabindex="-1" role="dialog">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <h5 class="modal-title">{{theUiText.WebSecurityErrorTitle}}</h5>
+              <div><span>{{theUiText.WebSecurityErrorGuideWin}}</span></div>
+              <div>-------------</div>
+              <div><span>{{theUiText.WebSecurityErrorGuideMac}}</span></div>
+              <div class="text-right mt-20"> <!-- text-right = text-align: right, mt-20 = margin-top: 2rem (20px) -->
+                <a href="#" class="btn btn-primary" role="button"><i class="fa fa-times mr-5" aria-hidden="true"></i>{{theUiText.Close}}</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="container-fluid">
+          <div class="row">
+            <!-- First column -->
+            <div :class="enableAppEdit ? 'col-sm-6' : 'col-sm-6 d-none'"> <!--class="col-sm d-none" -->
+              <div class="card">
+                <h2 class="card-title ">
+                  <p class="text-center">{{ appCodeSelected }} </p>
+                </h2>
+                <p>
+                  <textarea id="app-code" class="form-control form-control-lg" v-model="appCode"></textarea>
+                </p>
+                <div class="text-center">
+                  <button class="btn btn-primary" type="button" @click="compile()">
+                    <i class="fa fa-play-circle-o mr-5" aria-hidden="true"></i>
+                    {{theUiText.Compile}}
+                  </button>
+                </div>
+              </div>
+            </div>
+            <!-- Second column -->
+            <div class="col-sm">
+              <div class="card">
+                <h2 class="card-title">
+                  <p class="text-center"> {{ appName }} <i class="fa fa-lightbulb-o" aria-hidden="true"></i> {{ uiAppAuthor() }}</p>
+                </h2>
+                <div class="content">
+                  <p class="text-center">{{ uiAppDescription() }}</p>
+                </div>
+                <div class="content text-center">
+                  <h2 class="content-title">
+                    <i class="fa fa-user-circle fa-3x text-secondary" aria-hidden="true"></i>
+                  </h2>
+                  <div v-for="input in appUiInputs">
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">{{ input.label }}</span>
+                      </div>
+                      <select class="form-control" v-if="input.type === 'select'" v-model="input.value">
+                        <option v-for="option in input.options" :value="option">
+                          {{ option }}
+                        </option>
+                      </select>
+                      <input type="text" class="form-control" v-if="input.type === 'input'" v-model="input.value">
+                      <textarea class="form-control form-control-sm" v-if="input.type === 'textarea'" v-model="input.value"></textarea>
+                    </div>
+                  </div>
+                </div>
+                <div class="text-center">
+                  <button class="btn btn-primary" type="button" @click="appRun()">
+                    <i class="fa fa-bolt mr-5" aria-hidden="true"></i>
+                    {{theUiText.Run}}
+                  </button>
+                  <button class="btn ml-10" type="button" @click="appReset()">
+                    <i class="fa fa-leaf mr-5" aria-hidden="true"></i>
+                    {{theUiText.Reset}}
+                  </button>
+                </div>
+                <!--<div class="d-flex">
+                  <div class="m-auto"> 
+                    <ul class="navbar-nav d-none d-md-flex">
+                      <li class="nav-item">
+                        <a href="#" class="nav-link">
+                          <i class="fa fa-bolt fa-2x" aria-hidden="true"></i>
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a href="#" class="nav-link">
+                          <i class="fa fa-leaf fa-2x" aria-hidden="true"></i>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                -->
+                <div class="content text-center">
+                  <h2 class="content-title">
+                    <i class="fa fa-grav fa-3x text-secondary" aria-hidden="true"></i>
+                  </h2>
+                  <div v-for="output in uiOutput()">
+                    <span v-for="option in output.options">
+                      <span v-if="option.type === 'span'">{{ option.value }}</span>
+                      <img v-if="option.type === 'img'" :src="option.value" class="img-fluid" :alt="option.label">
+                    </span>
+                  </div>
+                  <!--
+                  <div v-for="output in appTaskOutputs">
+                    {{ output }}
+                  </div>
+                  -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<script src="./js/js-yaml.min.js"></script>
+<script src="./js/vue.global.prod.min.js"></script>
+<!--<script src="./js/vue-router.global.js"></script>-->
+<script src="./js/halfmoon.min.js"></script>
+<script src="./js/codemirror.js"></script>
+<script src="./js/codemirror-yaml.js"></script>
+<script src="./js/codemirror-active-line.js"></script>
+<script src="./js/codemirror-matchbrackets.js"></script>
+<script src="./js/prompt-app-gpt-app-uitext.js"></script>
+<script src="./js/prompt-app-gpt-app.js"></script>
+
+</body>
+</html>

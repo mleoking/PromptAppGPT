@@ -1,0 +1,14 @@
+---
+author: Leo
+name: My ChatGPT
+description: My ChatGPT
+gptRound: multiple
+failedRetries: 2
+
+sysTask:
+
+userTask: 
+  - executor: gpt
+    prompt: $i{Chat:@textarea}
+
+extra: 

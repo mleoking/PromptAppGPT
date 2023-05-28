@@ -1,0 +1,17 @@
+---
+openaiApiKey: sk-abcdefg 
+openaiApiProxy: https://api.openai.com #https://api.openai-proxy.com
+openaiGptModel: gpt-3.5-turbo #gpt-3.5-turbo/gpt-4
+
+enableAppEdit: false
+appOptions:
+  - name: My ChatGPT
+    code: my_chatgpt.yml
+  - name: Imaginative Image Creator
+    code: imaginative_image_creator.yml
+  - name: Pizza Order Bot
+    code: pizza_order_bot.yml
+  - name: Universal Translator
+    code: universal_translator.yml
+
+#https://quickref.me/yaml
