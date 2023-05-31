@@ -70,7 +70,7 @@ userTask:
 
 extra: 
 ```
-The **sysTask** section is the name of the author; The **name** section is the name of the app; The **description** section is the description of the app; The **gptRound** section determines whether to use gpt for single-round (`single`) or multi-round (`multiple`) conversations, for most apps the value should be `single`; The **failedRetries** section sets the number of retries on failures or the output is invalid.
+The **author** section is the name of the author; The **name** section is the name of the app; The **description** section is the description of the app; The **gptRound** section determines whether to use gpt for single-round (`single`) or multi-round (`multiple`) conversations, for most apps the value should be `single`; The **failedRetries** section sets the number of retries on failures or the output is invalid.
 
 The **sysTask** section is a collection of tasks separated by `-`, setting the behavior of the executor (gpt). For many apps this field can leave empty. When this section is not empty, each task must define the `prompt` and `executor` attributes. 
 
