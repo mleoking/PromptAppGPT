@@ -14,8 +14,8 @@ userTask:
     executor: dalle
     prompt: |
       prompt: $i{Word to draw:@textarea=$e{=(.*)}}
-      n: $i{Num of images:@select=1/2/3/4}
-      size: $i{Size of images:@select=256x256/512x512/1024x1024}
+      n: $i{Num of images:@select#1/2/3/4=1}
+      size: $i{Size of images:@select#256x256/512x512/1024x1024=512x512}
     outputer: dalle output $e{.*}
   - executor: gpt
     prompt: | 

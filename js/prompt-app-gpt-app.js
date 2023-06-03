@@ -180,6 +180,30 @@ const app = createApp({
                     let inputCode = inputCodes[i].substring(3, inputCodes[i].length-1);
                     uiInputObj.code = inputCodes[i];
 
+                    let iAt = inputCode.indexOf("@");
+                    let iHash = inputCode.indexOf("#");
+                    let iEqual = inputCode.indexOf("=");
+
+                    uiInputObj.label = inputCode.substring(0,iAt);
+                    if(iHash>=0){ //select type
+                      uiInputObj.type = inputCode.substring(iAt+1,iHash);
+                      let options = inputCode.substring(iHash+1);
+                      if(iEqual>=0){
+                        options = inputCode.substring(iHash+1,iEqual);
+                      }
+                      uiInputObj.options = options.split("/");
+                    } else {
+                      uiInputObj.type = inputCode.substring(iAt+1);
+                      if(iEqual>=0){
+                        uiInputObj.type = inputCode.substring(iAt+1,iEqual);
+                      }
+                    }
+
+                    if(iEqual>=0){
+                      uiInputObj.value = inputCode.substring(iEqual+1);
+                    }
+
+                    /*
                     let inputCodeA = inputCode.split("@");
                     uiInputObj.label = inputCodeA[0];
 
@@ -193,6 +217,7 @@ const app = createApp({
                         uiInputObj.value = inputCodeAB[1];
                       }
                     }
+                    */
 
                     this.appUiInputs.push(uiInputObj);
                   }

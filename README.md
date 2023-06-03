@@ -58,8 +58,8 @@ userTask:
     executor: dalle
     prompt: |
       prompt: $i{Word to draw:@textarea=$e{=(.*)}}
-      n: $i{Num of images:@select=1/2/3/4}
-      size: $i{Size of images:@select=256x256/512x512/1024x1024}
+      n: $i{Num of images:@select#1/2/3/4=1}
+      size: $i{Size of images:@select#256x256/512x512/1024x1024=512x512}
     outputer: dalle output $e{.*}
   - executor: gpt
     prompt: | 
@@ -85,7 +85,7 @@ The **userTask** section contains user-defined tasks separated by `-`. Each task
 - `outputer` is the text used to post process the output of *this* task. `e{xxx}` is the extractor that extract the text from the output of *this* task. 
 - `validator` is a regular expression used to validate the output of *this* task. The app stops at the currently task if its output fails to match the `validator` regular expression. For example, `validator: .{15,}` checks whether the length of task output is longer than or equal to 15.  
 
-The input of the app's user interface is automatically generated from the `#i{xxx}` expressions in the `prompt`. The format of the `#i{xxx}` expression is `$i{input label@type of input=value/options of input}`. Currently three types of input are supported: `select`, `input`, and `textarea`. The options of `select` input is separated by `/`.
+The input of the app's user interface is automatically generated from the `#i{xxx}` expressions in the `prompt`. The format of the `#i{xxx}` expression is `$i{input label@input type#select options=default value}`. Currently three types of input are supported: `select`, `input`, and `textarea`. The options of `select` input is separated by `/`.
 
 The `#e{xxx}` expression is the extractor that extracts the text from the output of *previous*/*this* task. The format of the `#e{xxx}` expression is `#e{regular expression}`. If there is a group construct `(xxx)` in the regular expression, only the text matches the group is extracted, otherwise the text matches the whole regular expression is extracted.   
 

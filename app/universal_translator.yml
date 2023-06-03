@@ -9,7 +9,7 @@ sysTask:
 userTask: 
   - executor: gpt
     prompt: |
-      Translate the following text to $i{Translate to:@select=English/Chinese/French/Spanish}:
+      Translate the following text to $i{Translate to:@select#English/Chinese/French/Spanish=English}:
       ```$i{Text:@textarea}```
 
 extra: 

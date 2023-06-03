@@ -41,7 +41,7 @@ userTask:
     executor: gpt
     prompt: My address is $i{My Address:@input}.
   - executor: gpt
-    prompt: I want $i{Size:@select=small/medium/large} size $i{Pizza:@select=pepperoni pizza/cheese pizza/eggplant pizza} with $i{Topping:@select=extra cheese/mushrooms/sausage/canadian bacon/AI sauce/peppers} topping and a $i{Drink:@select=coke/sprite/bottled water} to drink for $i{Pickup/Delivery:@select=pickup/delivery}. I pay with $i{Pay with:@select=cash/card/online payment}. Nothing else. I confirm the order. Please do not ask me to confirm again!
+    prompt: I want $i{Size:@select#small/medium/large} size $i{Pizza:@select#pepperoni pizza/cheese pizza/eggplant pizza} with $i{Topping:@select#extra cheese/mushrooms/sausage/canadian bacon/AI sauce/peppers} topping and a $i{Drink:@select#coke/sprite/bottled water} to drink for $i{Pickup/Delivery:@select#pickup/delivery=delivery}. I pay with $i{Pay with:@select#cash/card/online payment=cash}. Nothing else. I confirm the order. Please do not ask me to confirm again!
 
 extra: 
 
