@@ -84,6 +84,11 @@
                 <i class="fa fa-cog" aria-hidden="true"></i>
               </a>
             </li>
+            <!---<li class="nav-item">
+              <a href="#" class="nav-link" @click="doTest()">
+                doTest
+              </a>
+            </li>--->
           </ul>
         </div>
       </nav>
@@ -143,6 +148,12 @@
                   <span class="input-group-text">{{theUiText.OpenAIGptModel}}:</span>
                 </div>
                 <input type="text" class="form-control" placeholder="Input" v-model="openaiGptModel">
+              </div>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">{{theUiText.CorsProxy}}:</span>
+                </div>
+                <input type="text" class="form-control" placeholder="Input" v-model="corsProxy">
               </div>
               <div class="text-right mt-20"> <!-- text-right = text-align: right, mt-20 = margin-top: 2rem (20px) -->
                 <a href="#" class="btn btn-primary" role="button"><i class="fa fa-times mr-5" aria-hidden="true"></i>{{theUiText.Close}}</a>
@@ -241,10 +252,11 @@
                   <h2 class="content-title">
                     <i class="fa fa-grav fa-3x text-secondary" aria-hidden="true"></i>
                   </h2>
-                  <div v-for="output in uiOutput()">
+                  <div class="border" v-for="output in uiOutput()">
                     <span v-for="option in output.options">
-                      <span v-if="option.type === 'span'">{{ option.value }}</span>
                       <img v-if="option.type === 'img'" :src="option.value" class="img-fluid" :alt="option.label">
+                      <a v-if="option.type === 'a'" :href="option.value">{{ option.label }}</a>
+                      <span v-if="option.type === 'span'">{{ option.value }}</span>
                     </span>
                   </div>
                   <!--
@@ -271,6 +283,7 @@
 <script src="./js/codemirror-active-line.js"></script>
 <script src="./js/codemirror-matchbrackets.js"></script>
 <script src="./js/prompt-app-gpt-app-uitext.js"></script>
+<script src="./js/prompt-app-gpt-app-executor.js"></script>
 <script src="./js/prompt-app-gpt-app.js"></script>
 
 </body>

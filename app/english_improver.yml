@@ -2,7 +2,7 @@
 author: f
 name: English Improver
 description: Act as an English Translator and Improver
-round: single
+gptRound: single
 
 sysTask:
 

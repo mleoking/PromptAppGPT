@@ -1,0 +1,25 @@
+---
+author: Leo
+name: Web & Image Searcher 
+description: Search webpage and images using bing search.
+gptRound: single
+failedRetries: 2
+autoRun: true
+
+sysTask:
+
+userTask: 
+  - trigger: doWebSearch
+    executor: bingWeb
+    prompt: |
+      query: $e{query=(.*);}
+      limit: $e{limit=(.*)}
+  - trigger: doImageSearch
+    executor: bingImage
+    prompt: |
+      query: $e{query=(.*);}
+      limit: $e{limit=(.*)}
+  - executor: log
+    prompt: do$i{Search Type:@select#Web/Image=Web}Search query=$i{Query:@input}; limit=$i{limit:@select#3/5/10=5}
+
+extra: 

@@ -1,7 +1,6 @@
-# PromptAppGPT: A rapid prompt app development framework based on GPT.
+# PromptAppGPT: Example Apps.
 PromptAppGPT is a low-code prompt-based rapid app development framework. PromptAppGPT contains features such as low-code prompt-based development, GPT text generation, DALLE image generation, online prompt editer+compiler+runer, automatic user interface generation, support for plug-in extensions, etc. PromptAppGPT aims to enable natural language app development based on GPT.
 
-![PromptAppGPT user interface](images/pag-image-creator-edit.png)
 
 ## 🛠️ Features
 
@@ -19,7 +18,7 @@ PromptAppGPT is a low-code prompt-based rapid app development framework. PromptA
 2. Visit the website [PromptAppGPT Web Home](http://promptappgpt.wangzhishi.net) or download the [Windows 10+ APP](dist/pag.exe).
 3. Set the OpenAI Key/OpenAI Api Proxy/OpenAI Gpt Model.
 - OpenAI Key: the api key obtained from OpenAI.
-- OpenAI Api Proxy: the proxy to the openai api, if you can directly access openai api, the proxy is `https://api.openai.com`, otherwise the proxy should be another website (e.g. `https://api.openai-proxy.com`) that can proxy your request to the openai api.
+- OpenAI Api Proxy: the proxy to the openai api, if you can directly access openai api, the proxy is `https://api.openai.com/`, otherwise the proxy should be another website (e.g. `https://api.openai-proxy.com/`) that can proxy your request to the openai api.
 - OpenAI Gpt Model: gpt-4/gpt-3.5-turbo
 
 ![Set the OpenAI Key/OpenAI Api Proxy/OpenAI Gpt Model](images/pag-settings-note.png)
@@ -93,6 +92,10 @@ The **extra** section can be empty and it is not enabled currently.
 
 ## 🙋 FAQs
 
+### Failed to fetch Error
+
+Check if you have acess to the internet and have set the OpenAI Key/OpenAI Api Proxy/OpenAI Gpt Model correctly. 
+
 ### Web security error
 The browser security checks block PromptAppGPT's requests to openai api when it is lauched from the website. You can unblock PromptAppGPT website by following the steps below.
 
@@ -106,9 +109,5 @@ The browser security checks block PromptAppGPT's requests to openai api when it 
 
 **For Linux Chrome Users:**
 1. google-chrome --disable-web-security -–allow-file-access-from-files
-
-### Failed to fetch Error
-
-Check if you have acess to the internet and have set the OpenAI Key/OpenAI Api Proxy/OpenAI Gpt Model correctly. 
 
 

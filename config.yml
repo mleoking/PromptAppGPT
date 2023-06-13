@@ -1,10 +1,13 @@
 ---
 openaiApiKey: sk-promptappgpt-free
-openaiApiProxy: https://openai-pag.wangzhishi.net #https://api.openai.com #https://api.openai-proxy.com
+openaiApiProxy: https://openai-pag.wangzhishi.net/ #https://api.openai.com/ #https://api.openai-proxy.com/
 openaiGptModel: gpt-3.5-turbo #gpt-3.5-turbo/gpt-4
+corsProxy: https://cors-proxy.wangzhishi.net/
 
 enableAppEdit: false
 appOptions:
+  - name: All Executors
+    code: all_executors.yml
   - name: My ChatGPT
     code: my_chatgpt.yml
   - name: Imaginative Image Creator
@@ -15,5 +18,10 @@ appOptions:
     code: universal_translator.yml
   - name: English Improver
     code: english_improver.yml
+  - name: Web & Image Searcher
+    code: web_image_searcher.yml
+  - name: My AutoGPT
+    code: my_autogpt.yml
+
 
 #https://quickref.me/yaml

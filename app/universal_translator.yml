@@ -2,7 +2,7 @@
 author: Leo
 name: Universal Translator
 description: Universal Translator
-round: single
+gptRound: single
 
 sysTask:
 

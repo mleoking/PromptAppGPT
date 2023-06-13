@@ -8,6 +8,17 @@ const { createApp } = Vue;
 //     routes: [], // short for `routes: routes`
 // });
 
+const appUtil = {
+  strCodeEncode: function (str) {
+    let rtn = str;
+    if(rtn!=null){
+      rtn = rtn.replaceAll("\{","\[");
+      rtn = rtn.replaceAll("\}","\]");
+    }
+    return rtn;
+  }
+};
+
 
 const app = createApp({
     // Properties returned from data() become reactive state
@@ -19,6 +30,7 @@ const app = createApp({
         openaiApiKey: '',
         openaiApiProxy: '',
         openaiGptModel: '',
+        corsProxy:'',
         enableAppEdit: true,
         appCodeSelected: '',
         appOptions: [],
@@ -56,6 +68,7 @@ const app = createApp({
             this.openaiApiKey=tObj.openaiApiKey;
             this.openaiApiProxy=tObj.openaiApiProxy;
             this.openaiGptModel=tObj.openaiGptModel;
+            this.corsProxy=tObj.corsProxy;
             this.enableAppEdit=tObj.enableAppEdit;
             this.appOptions=tObj.appOptions;
             this.appCodeSelected=tObj.appOptions[0].code;
@@ -117,15 +130,21 @@ const app = createApp({
         let rtn = prompt;
         if (lastOutput!=null && rtn!=null && rtn.length>0) {
           //process extraction
-          const reExtract = /\$e\{[^\{\}]+\}/g;
+          const reExtract = /\$e\{[^\{\}]+\}/gm;
           let extractCodes = rtn.match(reExtract);
           //console.log(extractCodes);
           if(extractCodes!=null){
             for (let i=0; i<extractCodes.length; i++) {
               let extractCode = extractCodes[i].substring(3, extractCodes[i].length-1);
               //console.log(extractCode);
-              const reExtractCode = new RegExp(extractCode, 'i');
-              let extracted = lastOutput.match(reExtractCode);
+              let extracted = null;
+              if(extractCode==="RawInput"){
+                extracted = [lastOutput];
+              } else {
+                const reExtractCode = new RegExp(extractCode, 'im');
+                extracted = lastOutput.match(reExtractCode);
+              }
+              
               //console.log(extracted);
               if(extracted != null){
                 if (extractCode.includes("(")){
@@ -238,68 +257,6 @@ const app = createApp({
           this.prepUiInputs();
         }
       },
-      async doGptChatCompletion(messages) {
-        let rtn = null;
-        let fetchUrl = this.openaiApiProxy+"/v1/chat/completions";
-        try {
-          const response = await fetch(fetchUrl, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': 'Bearer ' + this.openaiApiKey
-            },
-            body: JSON.stringify({
-              "model": this.openaiGptModel,
-              "messages": messages,
-              "temperature": 0
-            })
-          });
-
-          if (!response.ok) {
-            console.error("HTTP ERROR: " + response.status + "\n" + response.statusText);
-            let rtext = await response.text();
-            console.log(rtext);
-            this.popAlert("Gpt executor error!", rtext);
-          } else {
-            rtn = await response.json();
-            //console.log(rtn);
-          }
-        } catch(err) {
-          console.error(err);
-          console.log("doGptChatCompletion Error!");
-          this.popAlert("Gpt executor error!", err.message);
-        }
-        return rtn;
-      },
-      async doDalleImageGen(messages) {
-        let rtn = null;
-        let fetchUrl = this.openaiApiProxy+"/v1/images/generations";
-        try {
-          const response = await fetch(fetchUrl, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': 'Bearer ' + this.openaiApiKey
-            },
-            body: JSON.stringify(messages)
-          });
-
-          if (!response.ok) {
-            console.error("HTTP ERROR: " + response.status + "\n" + response.statusText);
-            let rtext = await response.text();
-            console.log(rtext);
-            this.popAlert("Dalle executor error!", rtext);
-          } else {
-            rtn = await response.json();
-            //console.log(rtn);
-          }
-        } catch(err) {
-          console.error(err);
-          console.log("doDalleImageGen Error!");
-          this.popAlert("Dalle executor error!", err.message);
-        }
-        return rtn;
-      },
       async appRunPrompt(cPrompt) {
         let rtn = null;
         if(cPrompt!=null && cPrompt.length>0){
@@ -343,7 +300,7 @@ const app = createApp({
               });
 
               //console.log(messages);
-              response = await this.doGptChatCompletion(messages);
+              response = await pagExe.doGptChatCompletion(messages, this.openaiApiProxy, this.openaiApiKey, this.openaiGptModel);
              /*
               response={
                 'id': 'chatcmpl-6p9XYPYSTTRi0xEviKjjilqrWU2Ve',
@@ -365,23 +322,25 @@ const app = createApp({
               //response=null;
               //console.log(response);
 
-              if (response != null) {
-                if(response.choices!=null && response.choices.length>0){
-                  output = response.choices[0].message.content;
+              if (response.result != null) {
+                if(response.result.choices!=null && response.result.choices.length>0){
+                  output = response.result.choices[0].message.content;
                 }
               }
               
               break;
             case "dalle":
-              let cps = cPrompt.split("\n");
+              //cps = cPrompt.split("\n");
+              let dalleVars = jsyaml.load(cPrompt);
+              //console.log(dalleVars);
               messages = {
-                "prompt": cps[0].split(":")[1].trim(),
-                "n": parseInt(cps[1].split(":")[1].trim()),
-                "size": cps[2].split(":")[1].trim()
+                "prompt": dalleVars.prompt,
+                "n": dalleVars.n,
+                "size": dalleVars.size
               };
 
               //console.log(messages);
-              response = await this.doDalleImageGen(messages);
+              response = await pagExe.doDalleImageGen(messages, this.openaiApiProxy, this.openaiApiKey);
               /*
               response = {
                 created: 1684663985,
@@ -398,23 +357,90 @@ const app = createApp({
               //response=null;
               //console.log(response);
               
-              if (response != null) {
-                if(response.data!=null && response.data.length>0){
+              if (response.result != null) {
+                if(response.result.data!=null && response.result.data.length>0){
                   output = '';
-                  for (let i=0; i<response.data.length; i++) {
-                    output = output+"$o{image"+(i+1)+"@img="+response.data[i].url+"}";
+                  for (let i=0; i<response.result.data.length; i++) {
+                    output = output+"$o{image"+(i+1)+"@img="+response.result.data[i].url+"}";
                   }
                 }
               }
-
+              break;
+            case "bingWeb":
+              let bingWebVars = jsyaml.load(cPrompt);
+              //console.log(bingWebVars);
+              response = await pagExe.doBingWeb(this.corsProxy, bingWebVars.query, bingWebVars.limit);
+              //console.log(response);
+              if (response.result != null && response.result.length>0) {
+                output = '';
+                for (let i=0; i<response.result.length; i++) {
+                  let iName = appUtil.strCodeEncode(response.result[i].name);
+                  let iUrl = response.result[i].url;
+                  let iSnippet = appUtil.strCodeEncode(response.result[i].snippet);
+                  output = output+"$o{"+iName+"@a="+iUrl+"}";
+                  output = output+"$o{"+iName+"@span="+iSnippet+"}\n";
+                }
+              }
+              break;
+            case "bingImage":
+              let bingImageVars = jsyaml.load(cPrompt);
+              //console.log(bingImageVars);
+              response = await pagExe.doBingImage(this.corsProxy, bingImageVars.query,bingImageVars.limit);
+              if (response.result != null && response.result.length>0) {
+                output = '';
+                for (let i=0; i<response.result.length; i++) {
+                  let iNameUrl = appUtil.strCodeEncode(response.result[i].name+"@img="+response.result[i].url);
+                  let iNameDesc = appUtil.strCodeEncode(response.result[i].name+"@span=name:"+response.result[i].name+";src:"+response.result[i].src+";size:"+response.result[i].size+";type:"+response.result[i].type);
+                  output = output+"$o{"+iNameUrl+"}";
+                  output = output+"$o{"+iNameDesc+"}\n";
+                }
+              }
+              break;
+            case "webFetch":
+              let webFetchVars = jsyaml.load(cPrompt);
+              //console.log(webFetchVars);
+              response = await pagExe.doWebFetch(this.corsProxy, webFetchVars.url, webFetchVars.domQuerySelector, webFetchVars.textSearcher, webFetchVars.lenLimit, webFetchVars.sizeLimit, webFetchVars.textSimThreshold, webFetchVars.rtnParentLevel);
+              //console.log(response);
+              if (response.result != null) {
+                output = "";
+                if(response.result.title!=null){
+                  output = output+"$o{"+response.result.title+"@a="+webFetchVars.url+"}";
+                }
+                if(response.result.body!=null && response.result.body.length>0){
+                  for (let i=0; i<response.result.body.length; i++) {
+                    let bodyi =appUtil.strCodeEncode(response.result.body[i]);
+                    output = output+"$o{body"+(i+1)+"@span="+bodyi+"}";
+                  }
+                }
+              }
+              //console.log(output);
+              break;
+            case "javaScript":
+              //console.log(cPrompt);
+              response = await pagExe.doJavaScript(cPrompt);
+              if (response.result != null) {
+                output = response.result;
+              }
+              //console.log(response);
+              break;
+            case "log":
+              response = await pagExe.doLog(cPrompt);
+              //console.log(response);
+              if (response.result != null) {
+                output = response.result;
+              }
               break;
             default:
               console.log("unknown executor: " + cuTask.executor);
           }
+
           rtn = output;
           if(output!=null && cuTask.hasOwnProperty('outputer')){
             let outputer = cuTask.outputer;
             rtn = this.prepExtractPrompt(output,outputer);
+          }
+          if(response.error!=null){
+            this.popAlert(response.error.title, response.error.message);
           }
         }
         
@@ -482,6 +508,12 @@ const app = createApp({
             //console.log(this.appUserInputs);
 
             this.prepCurrentTask(this.appObj);
+            //console.log(this.appObj);
+            if(this.appUiInputs.length==0){
+              if(this.appObj.hasOwnProperty('autoRun') && this.appObj.autoRun){
+                this.appRun();
+              }
+            }
           } else {
             this.popAlert("Task output is null!", "Executor: "+cuTask.executor+" | Prompt: "+cPrompt);
           }
@@ -494,10 +526,11 @@ const app = createApp({
         let rtn = [];
         let appTaskOutputs = this.appTaskOutputs;
         for (let i=0; i<appTaskOutputs.length; i++) {
-          let outputI = appTaskOutputs[i];
+          let outputI = appTaskOutputs[i]+"";
           let uiOutputObjList = {code:'', label:'', type:'list', options:[], value: ''}
 
-          const reOutputCode = /\$o\{[^\{\}]+\}/g;
+          const reOutputCode = /\$o\{[^\{\}]+\}/gm;
+          //console.log(outputI);
           let outputCodes = outputI.match(reOutputCode);
           //console.log(outputCodes);
           if (outputCodes!=null){
@@ -547,6 +580,15 @@ const app = createApp({
         this.appCode=this.editor.getValue();
         //console.log(this.appCode);
         this.loadAppCode(this.appCode);
+      },
+      async doTest() {
+        //let response = await pagExe.doBingImageSearch("大熊猫");
+        //let response = await pagExe.doBingWebSearch("大熊猫");
+        //let response = await pagExe.doWebPageFetch("https://developer.mozilla.org/en-US/docs/Web/API/element/querySelector");
+        //let response = await pagExe.doWebPageFetch("https://developer.mozilla.org/en-US/docs/Web/API/element/querySelector", ".code-example");
+        let response = await pagExe.doJavaScript("let a=1+1;let b=a*2;let next='step1';if(b>2){next='step2'};return 'next step is:'+next;");
+        //let response = await pagExe.doJavaScript("let a=1+1xleo");
+        console.log(response);
       }
     },
 
@@ -569,7 +611,7 @@ const app = createApp({
   })
 
 //app.use(router);
-app.mount('#main_app')
+app.mount('#main_app');
 
 
 

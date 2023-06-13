@@ -1,0 +1,50 @@
+---
+author: Leo
+name: All Executors
+description: Example app to use all executors.
+gptRound: single
+failedRetries: 2
+autoRun: true
+
+sysTask:
+
+userTask: 
+  - trigger: gptExecute
+    executor: gpt
+    prompt: $e{query:(.*)}
+  - trigger: dalleExecute
+    executor: dalle
+    prompt: |
+      prompt: $e{query:(.*)}
+      n: 1
+      size: 512x512
+  - trigger: bingWebExecute
+    executor: bingWeb
+    prompt: |
+      query: $e{query:(.*)}
+      limit: 3
+  - trigger: bingImageExecute
+    executor: bingImage
+    prompt: |
+      query: $e{query:(.*)}
+      limit: 3
+  - trigger: webFetchExecute
+    executor: webFetch
+    prompt: |
+      url: $e{query:(.*)}
+      domQuerySelector: h1, h2, h3, h4, h5, h6
+      textSearcher:
+      lenLimit: 100
+      sizeLimit: 10
+      textSimThreshold: 0.7
+      rtnParentLevel: 1
+  - trigger: javaScriptExecute
+    executor: javaScript
+    prompt: $e{query:([^]*)}
+  - trigger: logExecute
+    executor: log
+    prompt: $e{query:(.*)}
+  - executor: log
+    prompt: $i{Executor:@select#gpt/dalle/bingWeb/bingImage/webFetch/javaScript/log=gpt}Execute query:$i{Query:@textarea}
+
+extra: 
