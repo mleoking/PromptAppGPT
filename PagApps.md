@@ -66,8 +66,8 @@ extra:
 ### Running Results
 
 ![Imaginative Image Creator](images/apps/imaginative_image_creator_run_note_1.png)
-![Imaginative Image Creator](images/apps/imaginative_image_creator_run_note_1.png)
-![Imaginative Image Creator](images/apps/imaginative_image_creator_run_note_1.png)
+![Imaginative Image Creator](images/apps/imaginative_image_creator_run_note_2.png)
+![Imaginative Image Creator](images/apps/imaginative_image_creator_run_note_3.png)
 
 ## Web & Image Searcher
 
