@@ -52,7 +52,7 @@ userTask:
     executor: bingWeb
     prompt: |
       query: $e{"query": "(.*)"}
-      limit: 2
+      limit: 3
     outputer: $e{RawInput} doGptNext
   - trigger: doSearchImage
     executor: bingImage
