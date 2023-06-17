@@ -74,7 +74,7 @@ The **author** section is the name of the author; The **name** section is the na
 
 The **sysTask** section is a collection of tasks separated by `-`, setting the behavior of the executor (gpt). For many apps this field can leave empty. When this section is not empty, each task must define the `prompt` and `executor` attributes. 
 
-- `executor` is the executor of a task. Currently only `dalle` and `gpt` executors are supported.
+- `executor` is the executor of a task.
 - `prompt` is the text to feed into the executor.
 
 The **userTask** section contains user-defined tasks separated by `-`. Each task must define the `prompt` and `executor` attributes, and the attributes of  `trigger`, `outputer` and `validator` are optional. The app loops through the user tasks in an orderly fashion, using the output of the previous task to match each task's `trigger`, with the first task to pass the match being the currently running task. The output of the app is empty on the first run. Tasks without a `trigger` attribute can match any output, and these tasks should be placed at the end of the user tasks to allow tasks with more explicit `trigger` conditions to be triggered first.
@@ -90,6 +90,10 @@ The input of the app's user interface is automatically generated from the `$i{xx
 The `$e{xxx}` expression is the extractor that extracts the text from the output of *previous*/*this* task. The format of the `$e{xxx}` expression is `$e{regular expression}`. If there is a group construct `(xxx)` in the regular expression, only the text matches the group is extracted, otherwise the text matches the whole regular expression is extracted.   
 
 The **extra** section can be empty and it is not enabled currently. 
+
+## Contributors
+
+![Contributors](https://contrib.rocks/image?repo=mleoking/PromptAppGPT)
 
 ## 🙋 FAQs
 
