@@ -91,7 +91,7 @@ The `$e{xxx}` expression is the extractor that extracts the text from the output
 
 The **extra** section can be empty and it is not enabled currently. 
 
-## Contributors
+## ❤️ Contributors
 
 ![Contributors](https://contrib.rocks/image?repo=mleoking/PromptAppGPT)
 
