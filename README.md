@@ -1,6 +1,8 @@
 # PromptAppGPT: A rapid prompt app development framework based on GPT.
 PromptAppGPT is a low-code prompt-based rapid app development framework. PromptAppGPT contains features such as low-code prompt-based development, GPT text generation, DALLE image generation, online prompt editer+compiler+runer, automatic user interface generation, support for plug-in extensions, etc. PromptAppGPT aims to enable natural language app development based on GPT.
 
+**PromptAppGPT significantly lowers the barrier to GPT application development, allowing anyone to implement their own AutoGPT-like applications with a few lines of low code.**
+
 See the example apps: [Imaginative Image Creator, Web & Image Searcher, My AutoGPT, ...](PagApps.md)
 
 ## 🛠️ Features
