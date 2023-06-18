@@ -5,6 +5,8 @@ PromptAppGPT is a low-code prompt-based rapid app development framework. PromptA
 
 See the example apps: [Imaginative Image Creator, Web & Image Searcher, My AutoGPT, ...](PagApps.md)
 
+![PromptAppGPT](images/pag-image-creator-edit.png)
+
 ## 🛠️ Features
 
 - ⚡ Low-code prompt-based rapid app development
