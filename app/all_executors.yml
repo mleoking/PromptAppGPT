@@ -34,13 +34,13 @@ userTask:
       url: $e{query:(.*)}
       domQuerySelector: h1, h2, h3, h4, h5, h6
       textSearcher:
-      lenLimit: 100
+      lenLimit: 1000
       sizeLimit: 10
       textSimThreshold: 0.7
       rtnParentLevel: 1
   - trigger: javaScriptExecute
     executor: javaScript
-    prompt: $e{query:([^]*)}
+    prompt: $e{query:([\s\S]*)}
   - trigger: logExecute
     executor: log
     prompt: $e{query:(.*)}

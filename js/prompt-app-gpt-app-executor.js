@@ -228,6 +228,7 @@ const pagExe = {
     return rtn;
   },
   doWebFetch: async function(corsProxy, url, domQuerySelector=null, textSearcher=null, lenLimit=1000, sizeLimit=3, textSimThreshold=0.7, rtnParentLevel=0) {
+    //console.log(arguments);
     let rtn = {
       error: null,
       result: null
@@ -251,9 +252,11 @@ const pagExe = {
             "body": []
           }
           let body = doc.querySelector("body");
+          //console.log(body);
           if(body!=null){
             if(domQuerySelector == null && textSearcher == null){
               let bodyText = body.textContent;
+              //console.log(bodyText);
               if(bodyText.length>lenLimit){
                 bodyText = bodyText.substring(0,lenLimit);
               }
@@ -357,7 +360,9 @@ const pagExe = {
       } catch(err) {
         console.log("JavaScript Error!");
         console.error(err);
-        rtn.error = {title: "JavaScript executor error!", message: err.message};
+        let errMsg = err.name+": "+err.message;
+        rtn.error = {title: "JavaScript executor error!", message: errMsg};
+        rtn.result = "Failed with " + errMsg;
       }
     }
     return rtn;

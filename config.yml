@@ -23,5 +23,4 @@ appOptions:
   - name: My AutoGPT
     code: my_autogpt.yml
 
-
 #https://quickref.me/yaml

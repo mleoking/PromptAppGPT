@@ -20,6 +20,6 @@ userTask:
       query: $e{query=(.*);}
       limit: $e{limit=(.*)}
   - executor: log
-    prompt: do$i{Search Type:@select#Web/Image=Web}Search query=$i{Query:@input}; limit=$i{limit:@select#3/5/10=5}
+    prompt: do$i{Search Type:@select#Web/Image=Web}Search query=$i{Query:@input}; limit=$i{limit:@select#1/2/3/4=2}
 
 extra: 

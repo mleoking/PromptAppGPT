@@ -16,6 +16,19 @@ const appUtil = {
       rtn = rtn.replaceAll("\}","\]");
     }
     return rtn;
+  },
+  //avoid special replacement patterns in the replace function to avoid $$ in the replacement to be replaced as $.
+  //see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace#specifying_a_string_as_the_replacement
+  /*
+  Specifying a function as a parameter
+  You can specify a function as the second parameter. In this case, the function will be invoked after the match has been performed. The function's result (return value) will be used as the replacement string. (Note: the above-mentioned special replacement patterns do not apply in this case.) Note that the function will be invoked multiple times for each full match to be replaced if the regular expression in the first parameter is global.
+  */
+  strReplace: function (str, pattern, replacement) {
+    let rtn = str;
+    if(rtn!=null){
+      rtn = rtn.replace(pattern,function() {return replacement});
+    }
+    return rtn;
   }
 };
 
@@ -130,12 +143,17 @@ const app = createApp({
         let rtn = prompt;
         if (lastOutput!=null && rtn!=null && rtn.length>0) {
           //process extraction
-          const reExtract = /\$e\{[^\{\}]+\}/gm;
+          const reExtract = /\$e\{(?:(?!\}e\$)[\s\S])+\}e\$/gm; // (?:(?!ab)[\s\S])+ match a string including newline which does not contain the multi-character sequence ab 
+          const reExtract2 = /\$e\{[^\{\}]+\}/gm;
           let extractCodes = rtn.match(reExtract);
+          if(extractCodes==null){
+            extractCodes = rtn.match(reExtract2);
+          }
           //console.log(extractCodes);
           if(extractCodes!=null){
             for (let i=0; i<extractCodes.length; i++) {
-              let extractCode = extractCodes[i].substring(3, extractCodes[i].length-1);
+              let iRightBracket = extractCodes[i].lastIndexOf("}");
+              let extractCode = extractCodes[i].substring(3, iRightBracket);
               //console.log(extractCode);
               let extracted = null;
               if(extractCode==="RawInput"){
@@ -145,19 +163,54 @@ const app = createApp({
                 extracted = lastOutput.match(reExtractCode);
               }
               
-              //console.log(extracted);
+              //console.log("extracted:\n"+extracted);
               if(extracted != null){
                 if (extractCode.includes("(")){
                   if(extracted.length>1){
-                    rtn = rtn.replace(extractCodes[i],extracted[1]);
+                    rtn = appUtil.strReplace(rtn,extractCodes[i],extracted[1]);
                   }
                 } else if (extracted.length>0) {
-                  rtn = rtn.replace(extractCodes[i],extracted[0]);
+                  rtn = appUtil.strReplace(rtn,extractCodes[i],extracted[0]);
                 }
-                //console.log(rtn);
+                //console.log("rtn:\n"+rtn);
               }
             }
           }
+        }
+        return rtn;
+      },
+      prepValuePrompt(values,prompt){
+        let rtn = prompt;
+        if (values!=null && rtn!=null && rtn.length>0) {
+          const reValue = /\$v\{(?:(?!\}v\$)[\s\S])+\}v\$/gm; // (?:(?!ab)[\s\S])+ match a string including newline which does not contain the multi-character sequence ab 
+          const reValue2 = /\$v\{[^\{\}]+\}/gm;
+          let valueCodes = rtn.match(reValue);
+          if(valueCodes==null){
+            valueCodes = rtn.match(reValue2);
+          }
+          //console.log(values);
+          //console.log(valueCodes);
+          if(valueCodes!=null){
+            for (let i=0; i<valueCodes.length; i++) {
+              let iRightBracket = valueCodes[i].lastIndexOf("}");
+              let valueCode = valueCodes[i].substring(3, iRightBracket);
+              //console.log(valueCode);
+              let iEqual = valueCode.indexOf("=");
+              let value = '';
+              if(iEqual>=0){
+                let vName = valueCode.substring(0, iEqual);
+                let vValue = valueCode.substring(iEqual+1);
+                values[vName]=vValue;
+              } else {
+                value = values[valueCode];
+              }
+              
+              //console.log(value);
+              rtn = appUtil.strReplace(rtn,valueCodes[i],value);
+            }
+          }
+          //console.log(values);
+          //console.log(rtn);
         }
         return rtn;
       },
@@ -180,6 +233,7 @@ const app = createApp({
 
           if(rtn!=null && rtn.prompt!=null){
             rtn.prompt=this.prepExtractPrompt(lastOutput,rtn.prompt);
+            rtn.prompt=this.prepValuePrompt(this.appValues,rtn.prompt);
           }
         }
         return rtn;
@@ -190,13 +244,26 @@ const app = createApp({
             let prompt = this.appCurrentUserTask.prompt;
             if (prompt.length>0) {
                 //process input
-                const reInput = /\$i\{[^\{\}]+\}/g;
+                // (?:     # begin non-capturing group
+                //   (?!   # begin negative lookahead
+                //     ab  # literal text sequence ab
+                //   )     # end negative lookahead
+                //   .     # any single character
+                // )       # end non-capturing group
+                // +       # repeat previous match one or more times
+                // (?:(?!ab).)+ match a string which does not contain the multi-character sequence ab
+                const reInput = /\$i\{(?:(?!\}i\$)[\s\S])+\}i\$/gm; // (?:(?!ab)[\s\S])+ match a string including newline which does not contain the multi-character sequence ab
+                const reInput2 = /\$i\{[^\{\}]+\}/gm;
                 let inputCodes = prompt.match(reInput);
+                if(inputCodes==null){
+                  inputCodes = prompt.match(reInput2);
+                }
                 //console.log(inputCodes);
                 if (inputCodes!=null){
                   for (let i=0; i<inputCodes.length; i++) {
                     let uiInputObj = {code:'', label:'', type:'', options:[], value: ''}
-                    let inputCode = inputCodes[i].substring(3, inputCodes[i].length-1);
+                    let iRightBracket = inputCodes[i].lastIndexOf("}");
+                    let inputCode = inputCodes[i].substring(3, iRightBracket);
                     uiInputObj.code = inputCodes[i];
 
                     let iAt = inputCode.indexOf("@");
@@ -269,6 +336,7 @@ const app = createApp({
           let messages = null;
           let response = null;
           let output = null;
+          //console.log(cPrompt);
           switch(cuTask.executor) {
             case "gpt":
               messages = [];
@@ -361,7 +429,7 @@ const app = createApp({
                 if(response.result.data!=null && response.result.data.length>0){
                   output = '';
                   for (let i=0; i<response.result.data.length; i++) {
-                    output = output+"$o{image"+(i+1)+"@img="+response.result.data[i].url+"}";
+                    output = output+"$o{image"+(i+1)+"@img="+response.result.data[i].url+"}o$";
                   }
                 }
               }
@@ -374,13 +442,14 @@ const app = createApp({
               if (response.result != null && response.result.length>0) {
                 output = '';
                 for (let i=0; i<response.result.length; i++) {
-                  let iName = appUtil.strCodeEncode(response.result[i].name);
+                  let iName = response.result[i].name; //appUtil.strCodeEncode(
                   let iUrl = response.result[i].url;
-                  let iSnippet = appUtil.strCodeEncode(response.result[i].snippet);
-                  output = output+"$o{"+iName+"@a="+iUrl+"}";
-                  output = output+"$o{"+iName+"@span="+iSnippet+"}\n";
+                  let iSnippet = response.result[i].snippet; //appUtil.strCodeEncode(
+                  output = output+"$o{"+iName+"@a="+iUrl+"}o$";
+                  output = output+"$o{"+iName+"@span="+iSnippet+"}o$\n";
                 }
               }
+              //console.log(output);
               break;
             case "bingImage":
               let bingImageVars = jsyaml.load(cPrompt);
@@ -389,10 +458,10 @@ const app = createApp({
               if (response.result != null && response.result.length>0) {
                 output = '';
                 for (let i=0; i<response.result.length; i++) {
-                  let iNameUrl = appUtil.strCodeEncode(response.result[i].name+"@img="+response.result[i].url);
-                  let iNameDesc = appUtil.strCodeEncode(response.result[i].name+"@span=name:"+response.result[i].name+";src:"+response.result[i].src+";size:"+response.result[i].size+";type:"+response.result[i].type);
-                  output = output+"$o{"+iNameUrl+"}";
-                  output = output+"$o{"+iNameDesc+"}\n";
+                  let iNameUrl = response.result[i].name+"@img="+response.result[i].url; //appUtil.strCodeEncode(
+                  let iNameDesc = response.result[i].name+"@span=name:"+response.result[i].name+";src:"+response.result[i].src+";size:"+response.result[i].size+";type:"+response.result[i].type; //appUtil.strCodeEncode(
+                  output = output+"$o{"+iNameUrl+"}o$";
+                  output = output+"$o{"+iNameDesc+"}o$\n";
                 }
               }
               break;
@@ -404,12 +473,12 @@ const app = createApp({
               if (response.result != null) {
                 output = "";
                 if(response.result.title!=null){
-                  output = output+"$o{"+response.result.title+"@a="+webFetchVars.url+"}";
+                  output = output+"$o{"+response.result.title+"@a="+webFetchVars.url+"}o$";
                 }
                 if(response.result.body!=null && response.result.body.length>0){
                   for (let i=0; i<response.result.body.length; i++) {
-                    let bodyi =appUtil.strCodeEncode(response.result.body[i]);
-                    output = output+"$o{body"+(i+1)+"@span="+bodyi+"}";
+                    let bodyi = response.result.body[i]; //appUtil.strCodeEncode(
+                    output = output+"$o{body"+(i+1)+"@span="+bodyi+"}o$";
                   }
                 }
               }
@@ -431,13 +500,14 @@ const app = createApp({
               }
               break;
             default:
-              console.log("unknown executor: " + cuTask.executor);
+              console.log("Unknown executor: " + cuTask.executor);
           }
 
           rtn = output;
           if(output!=null && cuTask.hasOwnProperty('outputer')){
             let outputer = cuTask.outputer;
             rtn = this.prepExtractPrompt(output,outputer);
+            rtn = this.prepValuePrompt(this.appValues,rtn);
           }
           if(response.error!=null){
             this.popAlert(response.error.title, response.error.message);
@@ -473,7 +543,7 @@ const app = createApp({
         if(cuTask!=null){
           let cPrompt = cuTask.prompt;
           for (let i=0; i<appUiInputs.length; i++) {
-            cPrompt=cPrompt.replace(appUiInputs[i].code,appUiInputs[i].value);
+            cPrompt=appUtil.strReplace(cPrompt,appUiInputs[i].code,appUiInputs[i].value);
             appValues[appUiInputs[i].label]=appUiInputs[i].value;
           }
 
@@ -529,14 +599,20 @@ const app = createApp({
           let outputI = appTaskOutputs[i]+"";
           let uiOutputObjList = {code:'', label:'', type:'list', options:[], value: ''}
 
-          const reOutputCode = /\$o\{[^\{\}]+\}/gm;
+          const reOutput = /\$o\{(?:(?!\}o\$)[\s\S])+\}o\$/gm; // (?:(?!ab)[\s\S])+ match a string including newline which does not contain the multi-character sequence ab
+          const reOutput2 = /\$o\{[^\{\}]+\}/gm;
           //console.log(outputI);
-          let outputCodes = outputI.match(reOutputCode);
+          let outputCodes = outputI.match(reOutput);
+          if(outputCodes==null){
+            outputCodes = outputI.match(reOutput2);
+          }
           //console.log(outputCodes);
           if (outputCodes!=null){
             for (let j=0; j<outputCodes.length; j++) {
               let uiOutputObj = {code:'', label:'', type:'', options:[], value: ''}
-              let outputCode = outputCodes[j].substring(3, outputCodes[j].length-1);
+              let iRightBracket = outputCodes[j].lastIndexOf("}");
+              let outputCode = outputCodes[j].substring(3, iRightBracket);
+              //console.log(outputCode);
               uiOutputObj.code = outputCodes[j];
               let iAt = outputCode.indexOf("@");
               let iEqual = outputCode.indexOf("=");
@@ -544,7 +620,7 @@ const app = createApp({
               uiOutputObj.type = outputCode.substring(iAt+1,iEqual);
               uiOutputObj.value = outputCode.substring(iEqual+1);
               uiOutputObjList.options.push(uiOutputObj);
-              outputI = outputI.replace(uiOutputObj.code,'');
+              outputI = appUtil.strReplace(outputI,uiOutputObj.code,'');
             }
           }
           if(outputI.length>0){
@@ -554,6 +630,7 @@ const app = createApp({
 
           rtn.push(uiOutputObjList);
         }
+        //console.log(rtn);
         return rtn;
       },
       changUiMode() {
