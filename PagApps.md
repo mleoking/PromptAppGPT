@@ -63,7 +63,7 @@ userTask:
 extra: 
 ```
 
-The task includes two steps to generate a drawing prompt using GPT and a drawing using Dalle. The use of PromptAppGPT makes the manual image generation task, which originally required two steps, automatic. At the same time, there is no need for the user to enter the tedious Prompt mantra themselves, all the user has to do is enter the description of the drawing they care about.
+The task includes two steps to generate a drawing prompt using GPT and a drawing using Dalle. The use of PromptAppGPT makes the manual image generation task, which originally required two steps, automatic. At the same time, there is no need for the user to enter the tedious prompt mantra themselves, all the user has to do is enter the description of the drawing they care about.
 
 ### Running Results
 
