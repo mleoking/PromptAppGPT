@@ -25,3 +25,7 @@ PromptAppGPT provides multi-task conditional triggering, result verification, an
 2. Visit the website to try the framework: https://promptappgpt.wangzhishi.net/
 3. See the example apps including the 70-line low-code implementation of the AutoGPT-like AI auto-assistant: https://github.com/mleoking/PromptAppGPT/blob/main/PagApps.md#my-autogpt
 
+**You can refer to these website to learn more about PromptAppGPT:**
+1. The github of the project: https://github.com/mleoking/PromptAppGPT/
+2. The homepage of the project: https://promptappgpt.wangzhishi.net/
+3. The example apps based on PromptAppGPT including the 70-line low-code implementation of the AutoGPT-like AI auto-assistant: https://github.com/mleoking/PromptAppGPT/blob/main/PagApps.md#my-autogpt
