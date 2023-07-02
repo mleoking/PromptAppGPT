@@ -74,10 +74,11 @@ The app first uses GPT to generate the drawing prompt.
 The app then automatically calls Dalle to generate the picture image based on the GPT output of the drawing prompt.
 ![Imaginative Image Creator](images/apps/imaginative_image_creator_run_note_2.png)
 
-The image below shows the final picture generation result image:
-![Imaginative Image Creator](images/apps/imaginative_image_creator_run_note_3.png)
 The GPT helped to expand the original simple description of 'a lovely cat and a dog' with many details in English, such as fluffy cat and a loyal, playful dog, and so on.
 These expanded descriptions allowed the subsequent DALL-E drawings to include more detail and be more vivid.
+Below is the generated image:
+![Imaginative Image Creator](images/apps/imaginative_image_creator_run_note_3.png)
+
 
 ## Web & Image Searcher
 
