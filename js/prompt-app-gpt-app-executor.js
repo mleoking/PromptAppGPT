@@ -196,24 +196,26 @@ const pagExe = {
                 //console.log(childj);
                 let link = childj.querySelector(".imgpt > a");
                 //console.log(link);
-                let mLink = link.getAttribute("m");
-                let mLinkObj = JSON.parse(mLink);
-                //console.log(mLinkObj['murl']);
-                let imgUrl = mLinkObj['murl'];
-                let imgSizeType= childj.querySelector(".imgpt > .img_info > span").textContent;
-                let imgSrc= childj.querySelector(".imgpt > .img_info > .lnkw > a").textContent;
-                let imgName=childj.querySelector(".infopt > div > div > ul").textContent;
-                //#mmComponent_images_1 > ul:nth-child(1) > li:nth-child(1) > div > div.infopt > div > div > ul
-                let image = {
-                  "name": imgName,
-                  "url": imgUrl,
-                  "src": imgSrc,
-                  "size": imgSizeType.split(' · ')[0].replaceAll(' ', ''),
-                  "type": imgSizeType.split(' · ')[1]
-                };
-                //console.log(image);
-                if(rtn.result.length<limit){
-                  rtn.result.push(image);
+                if(link!==null){
+                  let mLink = link.getAttribute("m");
+                  let mLinkObj = JSON.parse(mLink);
+                  //console.log(mLinkObj['murl']);
+                  let imgUrl = mLinkObj['murl'];
+                  let imgSizeType= childj.querySelector(".imgpt > .img_info > span").textContent;
+                  let imgSrc= childj.querySelector(".imgpt > .img_info > .lnkw > a").textContent;
+                  let imgName=childj.querySelector(".infopt > div > div > ul").textContent;
+                  //#mmComponent_images_1 > ul:nth-child(1) > li:nth-child(1) > div > div.infopt > div > div > ul
+                  let image = {
+                    "name": imgName,
+                    "url": imgUrl,
+                    "src": imgSrc,
+                    "size": imgSizeType.split(' · ')[0].replaceAll(' ', ''),
+                    "type": imgSizeType.split(' · ')[1]
+                  };
+                  //console.log(image);
+                  if(rtn.result.length<limit){
+                    rtn.result.push(image);
+                  }
                 }
               }
             }
