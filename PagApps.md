@@ -199,11 +199,40 @@ userTask:
       1. Recommend the best smartphone for business professionals in 2023.
       2. Explain why the smartphone is recommended and show the smartphone's image.}
 ```
+In the code, the sysTask section describes the Constraints, Commands, Resources, Performance Evaluation, Output and Format specifications that the assistant needs to comply with.
+
+The userTask section configures the trigger, executor and prompt for each of the five tasks required for the assistant to run.
 
 ### Running Results
 
 ![My AutoGPT](images/apps/my_autogpt_run_note_1.png)
+First, enter the objectives you want the assistant to complete:
+1. Recommend the best smartphone for business professionals in 2023.
+2. Explain why the smartphone is recommended and show the smartphone’s image.
+
+Then click Run. At this point, the program starts the fully automated process of unpacking and completing the objectives.
+
 ![My AutoGPT](images/apps/my_autogpt_run_note_2.png)
+The first step is to call GPT to make a decision that requires a web search to find a list of the best smartphones for business people in 2023.
+
+Step 2, call bingWeb to search two web pages and come up with the best smartphone candidates for business people in 2023: iPhone 14 Pro Max, Samsung Galaxy S22 Ultra, Google Pixel 7 Pro, Samsung Galaxy Z Fold 4, Oppo Find X5 Pro.
+
+In the third step, GPT was called to make a decision, and the next step was to further search the above two web pages (TechRepublic vs TechRadar) to get the similarities and differences in opinions.
+
+Step 4, call bingWeb to get information on the similarities and differences between the two reports.
+
 ![My AutoGPT](images/apps/my_autogpt_run_note_3.png)
+Step 5, GPT is called to make a decision. With the input from the above steps, GPT determines that the iPhone 14 Pro Max is the best smartphone for business people in 2023; then GPT decides that the next step is to call an image search to get an image of this phone.
+
+Step 6: Call bingImage to search for two images of the iPhone 14 Pro Max.
+
 ![My AutoGPT](images/apps/my_autogpt_run_note_4.png)
+In the seventh step, GPT is called to make a decision to select the first, better-looking, dark blue image out of the two, and to make the next decision to complete the task (doCompleteTask).
+
+In step 8, the task is completed and the result recommends the iPhone 14 Pro Max phone, with a reason for the recommendation and a link to the image of the phone.
+
 ![My AutoGPT](images/apps/my_autogpt_run_note_5.png)
+
+We see that the My AutoGPT app based on PromptAppGPT has demonstrated the ability of the large language model to automate goal planning, goal unpacking, decision making, use of tools, and synthesis of the final result.
+
+The updated PromptAppGPT comes with more plugins and mechanisms that will enable smarter Big Language Model applications to be developed with low code.
