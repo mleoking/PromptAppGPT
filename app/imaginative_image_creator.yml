@@ -19,7 +19,7 @@ userTask:
     outputer: dalle output $e{.*}
   - executor: gpt
     prompt: | 
-      Generate a detailed Dall-E prompt with several adjectives for the following text:
+      Generate a prompt for DALL-E with details for the following text:
       ```$i{Text to draw:@input}'''
     outputer: dalle_prompt=$e{.*} 
     validator: .{15,}
